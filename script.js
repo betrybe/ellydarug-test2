@@ -1,5 +1,7 @@
-//1 - Crie uma listagem de produtos
-// fazendo uma requisição fetch do endpoint da api
+// Criando o Array do Carrinho de Compras
+let cartArray = [];
+
+// Cria uma listagem dos produtos através da requisição fetch do endpoint da api
 function loadProducts() {
     const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
     fetch(url)
@@ -54,10 +56,14 @@ function createProductItemElement({ sku, name, image }) {
                     name: data.title,
                     salePrice: data.price,
                 };
+                // passando para o cartArray
+                cartArray.push(item);
                 return item;
             })
             .then((item) => {
                 document.querySelector('.cart__items').append(createCartItemElement(item));
+                // adiciona o item clicado ao localStorage
+                localStorage.setItem('cart__items', JSON.stringify(cartArray));
             })
             .catch((error) => {
                 console.log('ERRO ' + error);
