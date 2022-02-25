@@ -73,6 +73,8 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
     // coloque seu código aqui
+    // isto removeu o elemento do carrinho
+    this.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
