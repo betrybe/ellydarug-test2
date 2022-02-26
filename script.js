@@ -128,7 +128,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 window.onload = () => {
-    // fazendo a chamada da função load Products
     loadProducts();
     loadCart();
 
@@ -136,4 +135,12 @@ window.onload = () => {
     const span = document.createElement('span');
     span.className = 'total-price';
     section.appendChild(span);
+
+    document.querySelector('.empty-cart').addEventListener('click', () => {
+        cartArray = [];
+        document.querySelector('.total-price').innerHTML = 'Preço total: <strong>$0</strong>';
+        document.querySelector('.cart__items').innerHTML = '';
+        localStorage.setItem('cart__items', JSON.stringify(cartArray));
+    });
+    setCartTotalPrice();
 };
