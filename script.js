@@ -1,8 +1,6 @@
-// Criando o Array do Carrinho de Compras
 let cartArray = [];
 let cartTotalPrice = 0;
 
-// Cria uma listagem dos produtos através da requisição fetch do endpoint da api
 function loadProducts() {
     const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
@@ -53,7 +51,6 @@ function createProductItemElement({ sku, name, image }) {
     section.appendChild(createProductImageElement(image));
 
     const botaoAdd = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
-
     botaoAdd.addEventListener('click', () => {
         const URL = `https://api.mercadolibre.com/items/${sku}`;
         fetch(`${URL}`)
@@ -64,13 +61,11 @@ function createProductItemElement({ sku, name, image }) {
                     name: data.title,
                     salePrice: data.price,
                 };
-                // passando para o cartArray
                 cartArray.push(item);
                 return item;
             })
             .then((item) => {
                 document.querySelector('.cart__items').append(createCartItemElement(item));
-                // adiciona o item clicado ao localStorage
                 localStorage.setItem('cart__items', JSON.stringify(cartArray));
                 setCartTotalPrice();
             })
@@ -82,7 +77,6 @@ function createProductItemElement({ sku, name, image }) {
     return section;
 }
 
-// função que atualiza e escreve o preco total no carrinho
 function setCartTotalPrice() {
     cartTotalPrice = 0;
     cartArray.forEach((x) => {
@@ -95,7 +89,6 @@ function loadCart() {
     const localCartRaw = localStorage.getItem('cart__items');
     const localCart = JSON.parse(localCartRaw);
 
-    // Verifica se localCart não é Null
     if (localCart) {
         cartArray = localCart;
         cartArray.forEach((product) => {
@@ -109,15 +102,12 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-    //recuperando o meu SKU
     const productSku = event.target.children[0].className;
     const productIndex = cartArray.findIndex((x) => {
         return x.sku === productSku;
     });
     cartArray.splice(productIndex, 1);
-    //atualizando o Array
     localStorage.setItem('cart__items', JSON.stringify(cartArray));
-    // isto removeu o elemento do carrinho
     this.remove();
     setCartTotalPrice();
 }
