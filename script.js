@@ -1,5 +1,6 @@
 // Criando o Array do Carrinho de Compras
 let cartArray = [];
+let cartTotalPrice = 0;
 
 // Cria uma listagem dos produtos através da requisição fetch do endpoint da api
 function loadProducts() {
@@ -64,6 +65,7 @@ function createProductItemElement({ sku, name, image }) {
                 document.querySelector('.cart__items').append(createCartItemElement(item));
                 // adiciona o item clicado ao localStorage
                 localStorage.setItem('cart__items', JSON.stringify(cartArray));
+                setCartTotalPrice();
             })
             .catch((error) => {
                 console.log('ERRO ' + error);
@@ -71,6 +73,15 @@ function createProductItemElement({ sku, name, image }) {
     });
     section.appendChild(botaoAdd);
     return section;
+}
+
+// função que atualiza e escreve o preco total no carrinho
+function setCartTotalPrice() {
+    cartTotalPrice = 0;
+    cartArray.forEach((x) => {
+        return (cartTotalPrice += x.salePrice);
+    });
+    document.querySelector('.total-price').innerHTML = `Preço total: <strong>$${parseFloat(cartTotalPrice.toFixed(2))}</strong>`;
 }
 
 function loadCart() {
@@ -101,6 +112,7 @@ function cartItemClickListener(event) {
     localStorage.setItem('cart__items', JSON.stringify(cartArray));
     // isto removeu o elemento do carrinho
     this.remove();
+    setCartTotalPrice();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -119,4 +131,9 @@ window.onload = () => {
     // fazendo a chamada da função load Products
     loadProducts();
     loadCart();
+
+    const section = document.querySelector('.cart');
+    const span = document.createElement('span');
+    span.className = 'total-price';
+    section.appendChild(span);
 };
