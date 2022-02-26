@@ -91,15 +91,26 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-    // coloque seu código aqui
+    //recuperando o meu SKU
+    const productSku = event.target.children[0].className;
+    const productIndex = cartArray.findIndex((x) => {
+        return x.sku === productSku;
+    });
+    cartArray.splice(productIndex, 1);
+    //atualizando o Array
+    localStorage.setItem('cart__items', JSON.stringify(cartArray));
     // isto removeu o elemento do carrinho
     this.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
     const li = document.createElement('li');
+    const span = document.createElement('span');
+
     li.className = 'cart__item';
+    span.className = sku;
     li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+    li.appendChild(span);
     li.addEventListener('click', cartItemClickListener);
     return li;
 }
