@@ -5,9 +5,16 @@ let cartTotalPrice = 0;
 // Cria uma listagem dos produtos através da requisição fetch do endpoint da api
 function loadProducts() {
     const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
+    const loading = document.createElement('span');
+    loading.className = 'loading';
+    loading.innerText = 'Loading...';
+    document.querySelector('.items').append(loading);
+
     fetch(url)
         .then((body) => body.json())
         .then((data) => {
+            document.querySelector('.loading').remove();
             const products = data.results;
             products.forEach((item) => {
                 const product = {
