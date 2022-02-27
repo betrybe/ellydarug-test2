@@ -4,7 +4,9 @@ let cartTotal = 0;
 const classCartItems = '.cart__items';
 
 function setCartTotalPrice() {
+  debugger;
   cartTotal = 0;
+  //???
   const classTotalPrice = document.querySelector('.total-price');
   cartArray.forEach((x) => { (cartTotal += x.salePrice); });
   classTotalPrice.innerHTML = `Preço total: $${parseFloat(cartTotal.toFixed(2))}`;
@@ -21,12 +23,14 @@ function cartItemClickListener(event) {
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
+  //passagem do sku na classe do span
   const span = document.createElement('span');
-
   li.className = 'cart__item';
+  //atribuindo sku
   span.className = sku;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.appendChild(span);
+  //---> olha um click addEventListener
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -93,13 +97,14 @@ function loadProducts() {
 }
 
 function loadCart() {
-  const localCartRaw = localStorage.getItem('cart__items');
+  const localCartRaw = localStorage.getItem('.cart__items');
   const localCart = JSON.parse(localCartRaw);
   if (localCart) {
     cartArray = localCart;
     cartArray.forEach((product) => {
       document.querySelector(classCartItems).append(createCartItemElement(product));
     });
+    setCartTotalPrice();
   }
 }
 
@@ -108,13 +113,16 @@ function getSkuFromProductItem(item) {
 }
 
 window.onload = () => {
-  loadProducts();
-  loadCart();
+  
+  
 
   const section = document.querySelector('.cart');
   const span = document.createElement('span');
   span.className = 'total-price';
   section.appendChild(span);
+  
+  loadProducts();
+  loadCart();
 
   document.querySelector('.empty-cart').addEventListener('click', () => {
     cartArray = [];
