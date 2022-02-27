@@ -1,6 +1,7 @@
 *{
   margin: 0;
   padding: 0;
+  font-family: sans-serif;  
 }
 
 .container {
@@ -37,7 +38,6 @@
   flex-grow: 1;
   padding: 10px;
   text-align: center;
-  font-family: sans-serif;
 }
 
 .item .item__image {
@@ -109,7 +109,9 @@
   background-color: rgb(255, 253, 107);
 }
 
-.cart .total {
+.cart .total-price {
   font-size: 1.4em;
-  font-weight: 700;
+  font-weight: 400;
+  margin: 10px;
+  text-align: center;
 }
