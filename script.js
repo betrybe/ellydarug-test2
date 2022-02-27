@@ -4,10 +4,8 @@ let cartTotal = 0;
 const classCartItems = '.cart__items';
 
 function setCartTotalPrice() {
-  debugger;
   cartTotal = 0;
-  //???
-  const classTotalPrice = document.querySelector('.total-price');
+  const classTotalPrice = document.querySelector('.total-price');  
   cartArray.forEach((x) => { (cartTotal += x.salePrice); });
   classTotalPrice.innerHTML = `Preço total: $${parseFloat(cartTotal.toFixed(2))}`;
 }
@@ -23,14 +21,11 @@ function cartItemClickListener(event) {
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  //passagem do sku na classe do span
   const span = document.createElement('span');
   li.className = 'cart__item';
-  //atribuindo sku
   span.className = sku;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.appendChild(span);
-  //---> olha um click addEventListener
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -55,8 +50,8 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  const botaoAdd = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
-  botaoAdd.addEventListener('click', () => {
+  const addBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  addBtn.addEventListener('click', () => {
     const URL = `https://api.mercadolibre.com/items/${sku}`;
     fetch(`${URL}`).then((body) => body.json()).then((data) => {
         const item = { sku: data.id, name: data.title, salePrice: data.price };
@@ -67,11 +62,9 @@ function createProductItemElement({ sku, name, image }) {
         localStorage.setItem(classCartItems, JSON.stringify(cartArray));
         setCartTotalPrice();
       })
-      .catch((error) => {
-        console.log('Erro ', error.message);
-      });
+      .catch((error) => console.log('Erro ', error.message));
   });
-  section.appendChild(botaoAdd);
+  section.appendChild(addBtn);
   return section;
 }
 
@@ -91,9 +84,7 @@ function loadProducts() {
         document.querySelector('.items').append(createProductItemElement(product));
       });
     })
-    .catch((error) => {
-      console.log('Erro ', error.message);
-    });
+    .catch((error) => console.log('Erro ', error.message));
 }
 
 function loadCart() {
@@ -113,14 +104,11 @@ function getSkuFromProductItem(item) {
 }
 
 window.onload = () => {
-  
-  
-
   const section = document.querySelector('.cart');
   const span = document.createElement('span');
   span.className = 'total-price';
   section.appendChild(span);
-  
+
   loadProducts();
   loadCart();
 
