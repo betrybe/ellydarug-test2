@@ -7,7 +7,7 @@ function setCartTotalPrice() {
   cartTotal = 0;
   const classTotalPrice = document.querySelector('.total-price');  
   cartArray.forEach((x) => { (cartTotal += x.salePrice); });
-  classTotalPrice.innerHTML = `Preço total: $${parseFloat(cartTotal.toFixed(2))}`;
+  classTotalPrice.innerHTML = `${parseFloat(cartTotal.toFixed(2))}`;
 }
 
 function cartItemClickListener(event) {
@@ -37,6 +37,25 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function addCartItem() {
+  const productSku = getSkuFromProductItem(this.parentElement);  
+  const URL = `https://api.mercadolibre.com/items/${productSku}`;
+  fetch(`${URL}`).then((body) => body.json()).then((data) => {
+    const item = { sku: data.id, name: data.title, salePrice: data.price };
+    cartArray.push(item);
+    return item;
+  }).then((item) => {
+    document.querySelector(classCartItems).append(createCartItemElement(item));
+    localStorage.setItem(classCartItems, JSON.stringify(cartArray));
+    setCartTotalPrice();
+  })
+  .catch((error) => console.log('Erro ', error.message));
+}
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -51,19 +70,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   const addBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
-  addBtn.addEventListener('click', () => {
-    const URL = `https://api.mercadolibre.com/items/${sku}`;
-    fetch(`${URL}`).then((body) => body.json()).then((data) => {
-        const item = { sku: data.id, name: data.title, salePrice: data.price };
-        cartArray.push(item);
-        return item;
-      }).then((item) => {
-        document.querySelector(classCartItems).append(createCartItemElement(item));
-        localStorage.setItem(classCartItems, JSON.stringify(cartArray));
-        setCartTotalPrice();
-      })
-      .catch((error) => console.log('Erro ', error.message));
-  });
+  addBtn.addEventListener('click', addCartItem);
   section.appendChild(addBtn);
   return section;
 }
@@ -99,23 +106,21 @@ function loadCart() {
   }
 }
 
-function getSkuFromProductItem(item) {
-    return item.querySelector('span.item__sku').innerText;
-}
-
 window.onload = () => {
-  const section = document.querySelector('.cart');
-  const span = document.createElement('span');
-  span.className = 'total-price';
-  section.appendChild(span);
-
+  const sectionElement = document.querySelector('.cart');
+  const pElement = document.createElement('p');
+  const spanElement = document.createElement('span');
+  spanElement.className = 'total-price';
+  pElement.innerHTML = 'Preço Total: $';
+  sectionElement.appendChild(pElement);
+  pElement.appendChild(spanElement);
+  spanElement.innerHTML = '0';
   loadProducts();
   loadCart();
-
   document.querySelector('.empty-cart').addEventListener('click', () => {
     cartArray = [];
     const classTotalPrice = document.querySelector('.total-price');
-    classTotalPrice.innerHTML = 'Preço total: $0';
+    classTotalPrice.innerHTML = '0';
     document.querySelector(classCartItems).innerHTML = '';
     localStorage.setItem(classCartItems, JSON.stringify(cartArray));
   });
